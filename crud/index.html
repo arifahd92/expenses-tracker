@@ -93,6 +93,23 @@
       function listfunc() {
         console.log("listfunc got called");
         let edit = document.querySelectorAll("#edit");
+        let del = document.querySelectorAll("#delete");
+        del.forEach((item, ind) => {
+          item.addEventListener("click", (item) => {
+            console.log("dlt button of index " + ind + "got clicked");
+            let hitted_id = alldata[ind]._id;
+            console.log(hitted_id);
+            axios
+              .delete(
+                `https://crudcrud.com/api/ac5f824e11294f51b67c58b9310e1096/appointment/${hitted_id}`
+              )
+              .then((response) => {
+                console.log("deleted");
+              })
+              .catch((err) => console.log(err));
+          });
+        });
+        //deletye end
         console.log(edit);
         edit.forEach((item, ind) => {
           console.log(item);
