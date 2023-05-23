@@ -67,11 +67,11 @@
             .then((data) => {
               // console.log(data); // Log the extracted data
               alldata = data;
-              console.log(alldata);
+              //console.log(alldata);
               alldata.forEach((data, ind) => {
-                console.log("foreachmethod got called");
+                //console.log("foreachmethod got called");
                 let li = document.createElement("li");
-                console.log(data.phone);
+                // console.log(data.phone);
                 li.innerText = `name:${data.name}- email:${data.email}-phone${data.phone}`;
                 list.appendChild(li);
                 let btn1 = document.createElement("button");
@@ -83,12 +83,50 @@
                 li.appendChild(btn1);
                 li.append(btn2);
               });
+              listfunc();
             })
             .catch((err) => {
               console.log(err); // Log any errors
             });
         }
       });
+      function listfunc() {
+        console.log("listfunc got called");
+        let edit = document.querySelectorAll("#edit");
+        console.log(edit);
+        edit.forEach((item, ind) => {
+          console.log(item);
+          item.addEventListener("click", (e) => {
+            console.log("edit eventlistener got hitted");
+            let hitted_id = alldata[ind]._id;
+            console.log(hitted_id);
+            inp[0].value = alldata[ind].name;
+            inp[1].value = alldata[ind].email;
+            inp[2].value = alldata[ind].phone;
+            item.innerText = "save";
+            item.addEventListener("click", () => {
+              const updatedData = {
+                name: inp[0].value,
+                email: inp[1].value,
+                phone: inp[2].value,
+              };
+              item.innerText = "edit";
+              axios
+                .put(
+                  `https://crudcrud.com/api/ac5f824e11294f51b67c58b9310e1096/appointment/${hitted_id}`,
+                  updatedData
+                )
+                .then((response) => {
+                  console.log("PUT request successful");
+                  console.log(response);
+                })
+                .catch((error) => {
+                  console.error("Error making PUT request:", error);
+                });
+            });
+          });
+        });
+      }
     </script>
   </body>
 </html>
