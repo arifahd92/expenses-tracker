@@ -24,7 +24,7 @@
         email: "",
         phone: 0,
       };
-      let data = {};
+      var alldata = [];
       submit.addEventListener("click", (e) => {
         e.preventDefault();
         console.log(inp[0].value);
@@ -33,7 +33,6 @@
         obj.phone = inp[2].value;
         // console.log(obj);
         if (obj.name && obj.email && obj.phone) {
-          localStorage.setItem(obj.email, JSON.stringify(obj));
           axios
             .post(
               "https://crudcrud.com/api/ac5f824e11294f51b67c58b9310e1096/appointment",
@@ -47,36 +46,49 @@
               // Handle error
               console.error(error);
             });
+
+          inp[0].value = "";
+          inp[1].value = "";
+          inp[2].value = "";
+          showAppointment();
         } else {
+          showAppointment();
           alert("fill all the details ");
         }
-      });
-      inp[0].value = "";
-      inp[1].value = "";
-      inp[2].value = "";
-      showAppointment();
-      function showAppointment() {
-        let keys = Object.keys(localStorage);
-        keys.forEach((key) => {
-          data[key] = localStorage.getItem(key);
-        });
-        //  let objdata = JSON.parse(data);
-        console.log(data + "saved data");
-        for (var x in data) {
-          console.log(JSON.parse(data[x]).name + "im data[x]");
-          let li = document.createElement("li");
-          li.innerText = `name:${JSON.parse(data[x]).name}- email:${
-            JSON.parse(data[x]).email
-          }-phone${JSON.parse(data[x]).phone}`;
-          list.appendChild(li);
-          let btn1 = document.createElement("button");
-          btn1.innerText = "edit";
-          let btn2 = document.createElement("button");
-          btn2.innerText = "delete";
-          li.appendChild(btn1);
-          li.append(btn2);
+        function showAppointment() {
+          console.log("showappointmemt got called");
+          axios
+            .get(
+              "https://crudcrud.com/api/ac5f824e11294f51b67c58b9310e1096/appointment"
+            )
+            .then((response) => {
+              return response.data; // Extract the response data
+            })
+            .then((data) => {
+              // console.log(data); // Log the extracted data
+              alldata = data;
+              console.log(alldata);
+              alldata.forEach((data, ind) => {
+                console.log("foreachmethod got called");
+                let li = document.createElement("li");
+                console.log(data.phone);
+                li.innerText = `name:${data.name}- email:${data.email}-phone${data.phone}`;
+                list.appendChild(li);
+                let btn1 = document.createElement("button");
+                btn1.id = "edit";
+                btn1.innerText = "edit";
+                let btn2 = document.createElement("button");
+                btn2.id = "delete";
+                btn2.innerText = "delete";
+                li.appendChild(btn1);
+                li.append(btn2);
+              });
+            })
+            .catch((err) => {
+              console.log(err); // Log any errors
+            });
         }
-      }
+      });
     </script>
   </body>
 </html>
