@@ -5,142 +5,219 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+    />
 
     <title>Document</title>
   </head>
-  <body>
-    <form action="#">
-      <input type="text" id="name" />
-      <input type="email" name="" id="email" />
-      <input type="number" name="number" id="number" />
-      <input type="submit" name="" id="submit" />
-    </form>
-    <ul id="list"></ul>
+  <body class="container bg-dark">
+    <div class="container border mt-5">
+      <form
+        action="#"
+        class="form-group row align-item-center justify-content-around"
+      >
+        <input
+          type="text"
+          id="name"
+          placeholder="enter name"
+          class="form-control col-sm-4 mt-3 text-center shadow"
+        />
+
+        <input
+          type="email"
+          name=""
+          id="email"
+          placeholder="enter gmail"
+          class="form-control col-sm-4 mt-3 text-center shadow"
+        />
+        <input
+          type="number"
+          name="number"
+          id="number"
+          class="form-control col-sm-4 mt-3 text-center shadow"
+          placeholder="enter phone"
+        />
+        <input
+          type="submit"
+          name=""
+          id="submit"
+          class="form-control btn-outline-success col-sm-12 mt-3 shadow"
+        />
+      </form>
+      <ul
+        id="list"
+        class="container list-group mt-2 justify-content-center shadow"
+      ></ul>
+    </div>
     <script>
       let inp = document.querySelectorAll("input");
       let list = document.querySelector("#list");
+      var alldata = [];
       let obj = {
         name: "",
         email: "",
         phone: 0,
       };
-      var alldata = [];
-      submit.addEventListener("click", (e) => {
+      async function submitfunc(e) {
         e.preventDefault();
         console.log(inp[0].value);
         obj.name = inp[0].value;
         obj.email = inp[1].value;
         obj.phone = inp[2].value;
-        // console.log(obj);
-        if (obj.name && obj.email && obj.phone) {
-          axios
-            .post(
-              "https://crudcrud.com/api/ac5f824e11294f51b67c58b9310e1096/appointment",
-              obj
-            )
-            .then(function (response) {
-              // Handle successful response
-              console.log(response.data);
-            })
-            .catch(function (error) {
-              // Handle error
-              console.error(error);
-            });
 
-          inp[0].value = "";
-          inp[1].value = "";
-          inp[2].value = "";
-          showAppointment();
+        if (obj.name && obj.email && obj.phone) {
+          try {
+            const response = await axios.post(
+              "https://crudcrud.com/api/9567f134f0a34821bd84702f08c58d74/appointment",
+              obj
+            );
+            console.log(response.data);
+
+            inp[0].value = "";
+            inp[1].value = "";
+            inp[2].value = "";
+            showAppointment();
+          } catch (error) {
+            console.error(error);
+          }
         } else {
-          showAppointment();
-          alert("fill all the details ");
+          alert("Fill all the details");
         }
-        function showAppointment() {
-          console.log("showappointmemt got called");
-          axios
-            .get(
-              "https://crudcrud.com/api/ac5f824e11294f51b67c58b9310e1096/appointment"
-            )
-            .then((response) => {
-              return response.data; // Extract the response data
-            })
-            .then((data) => {
-              // console.log(data); // Log the extracted data
-              alldata = data;
-              //console.log(alldata);
-              alldata.forEach((data, ind) => {
-                //console.log("foreachmethod got called");
-                let li = document.createElement("li");
-                // console.log(data.phone);
-                li.innerText = `name:${data.name}- email:${data.email}-phone${data.phone}`;
-                list.appendChild(li);
-                let btn1 = document.createElement("button");
-                btn1.id = "edit";
-                btn1.innerText = "edit";
-                let btn2 = document.createElement("button");
-                btn2.id = "delete";
-                btn2.innerText = "delete";
-                li.appendChild(btn1);
-                li.append(btn2);
-              });
-              listfunc();
-            })
-            .catch((err) => {
-              console.log(err); // Log any errors
+      }
+      showAppointment();
+
+      async function showAppointment() {
+        try {
+          submit.addEventListener("click", submitfunc);
+          let ul = document.querySelector("#list");
+          console.log("showappointment got called");
+          const response = await axios.get(
+            "https://crudcrud.com/api/9567f134f0a34821bd84702f08c58d74/appointment"
+          );
+          const data = response.data;
+          while (ul.firstChild) {
+            ul.removeChild(ul.firstChild);
+          }
+          alldata = data;
+          // console.log(alldata);
+
+          if (alldata.length !== 0) {
+            alldata.forEach((data, ind) => {
+              let li = document.createElement("li");
+              li.className = "list-group-item d-flex row";
+
+              let div1 = document.createElement("div");
+              div1.className = "col-md-8";
+              console.log(data.phone);
+              console.log("im inside wala daTA");
+              console.log(data);
+              div1.innerText = `name:${data.name}- email:${data.email}-phone${data.phone}`;
+              console.log("look at me");
+              console.log(
+                `name:${data.name}- email:${data.email}-phone${data.phone}`
+              );
+              li.appendChild(div1);
+
+              let div2 = document.createElement("div");
+              div2.className = "col-md-4 row justify-content-center";
+
+              let btn1 = document.createElement("button");
+              btn1.id = "edit";
+              btn1.className =
+                "btn btn-sm  btn-outline-success mr-1 col-4 float-right shadow";
+              btn1.innerText = "edit";
+
+              let btn2 = document.createElement("button");
+              btn2.id = "delete";
+              btn2.className =
+                "btn btn-sm btn-outline-danger mr-1 col-4 float-right shadow";
+              btn2.innerText = "delete";
+
+              div2.appendChild(btn1);
+              div2.appendChild(btn2);
+              li.appendChild(div2);
+
+              list.appendChild(li);
             });
+          }
+
+          modify();
+        } catch (err) {
+          console.log(err);
         }
-      });
-      function listfunc() {
-        console.log("listfunc got called");
+      }
+      modify();
+
+      function modify() {
+        console.log("modify got called");
         let edit = document.querySelectorAll("#edit");
         let del = document.querySelectorAll("#delete");
+        //handling deletion
         del.forEach((item, ind) => {
-          item.addEventListener("click", (item) => {
-            console.log("dlt button of index " + ind + "got clicked");
+          item.addEventListener("click", async (item) => {
+            console.log("dlt button of index " + ind + " got clicked");
             let hitted_id = alldata[ind]._id;
             console.log(hitted_id);
-            axios
-              .delete(
-                `https://crudcrud.com/api/ac5f824e11294f51b67c58b9310e1096/appointment/${hitted_id}`
-              )
-              .then((response) => {
-                console.log("deleted");
-              })
-              .catch((err) => console.log(err));
+            let listitem = document.querySelectorAll("li");
+
+            try {
+              await axios.delete(
+                `https://crudcrud.com/api/9567f134f0a34821bd84702f08c58d74/appointment/${hitted_id}`
+              );
+              console.log("deleted");
+              showAppointment();
+              return;
+            } catch (err) {
+              console.log(err);
+            }
           });
         });
-        //deletye end
+
         console.log(edit);
         edit.forEach((item, ind) => {
           console.log(item);
-          item.addEventListener("click", (e) => {
+          item.addEventListener("click", async (e) => {
             console.log("edit eventlistener got hitted");
             let hitted_id = alldata[ind]._id;
             console.log(hitted_id);
             inp[0].value = alldata[ind].name;
             inp[1].value = alldata[ind].email;
             inp[2].value = alldata[ind].phone;
-            item.innerText = "save";
-            item.addEventListener("click", () => {
+            submit.value = "save";
+            submit.removeEventListener("click", submitfunc);
+            submit.addEventListener("click", updatedsubmit);
+            async function updatedsubmit(e) {
+              let inp = document.querySelectorAll("input");
+              console.log(inp);
               const updatedData = {
                 name: inp[0].value,
                 email: inp[1].value,
                 phone: inp[2].value,
               };
-              item.innerText = "edit";
-              axios
-                .put(
-                  `https://crudcrud.com/api/ac5f824e11294f51b67c58b9310e1096/appointment/${hitted_id}`,
+              submit.value = "submit";
+              console.log(inp[0].value);
+
+              try {
+                await axios.put(
+                  `https://crudcrud.com/api/9567f134f0a34821bd84702f08c58d74/appointment/${hitted_id}`,
                   updatedData
-                )
-                .then((response) => {
-                  console.log("PUT request successful");
-                  console.log(response);
-                })
-                .catch((error) => {
-                  console.error("Error making PUT request:", error);
-                });
-            });
+                );
+                console.log("PUT request successful");
+                console.log("object");
+                inp[0].value = "";
+                inp[1].value = "";
+                inp[2].value = "";
+                console.log(
+                  "going to call show appointment**********************"
+                );
+                submit.removeEventListener("click", updatedsubmit);
+                showAppointment();
+              } catch (error) {
+                console.error("Error making PUT request:", error);
+              }
+            }
           });
         });
       }
